@@ -1,24 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import React, { useEffect, useState } from 'react';
+import './style/global.scss'
+import Main, { IPost } from './components/Main';
+import { Route, Routes } from 'react-router-dom';
+import FullPost from './components/FullPost';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from './store/store';
+import { searchPostThunk } from './slices/postSlice';
 function App() {
+
+
+  const dispatch = useDispatch<AppDispatch>()
+  const { search } = useSelector((state: RootState) => state.input)
+  useEffect(() => {
+    const fetchPosts = async () => {
+      dispatch(searchPostThunk(search))
+    }
+    fetchPosts()
+  }, [search])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <main>
+        <Routes>
+          <Route path='/' element={<Main />} />
+          <Route path='/post/:id' element={<FullPost />} />
+        </Routes>
+      </main>
     </div>
   );
 }
